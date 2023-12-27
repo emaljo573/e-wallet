@@ -12,14 +12,7 @@ import java.util.Properties;
 
 @Configuration
 public class KafkaConfig {
-    @Bean
-    public ConsumerFactory getConsumerFactory(){
-        Properties properties=new Properties();
-        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,"localhost:9092");
-        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,StringDeserializer.class);
-        return new DefaultKafkaConsumerFactory(properties);
-    }
+
     @Bean
     ProducerFactory getProducerFactory(){
         Properties properties=new Properties();
@@ -32,5 +25,14 @@ public class KafkaConfig {
     KafkaTemplate<String,String> getKafkaTemplate(){
 
         return new KafkaTemplate<>(getProducerFactory());
+    }
+
+    @Bean
+    public ConsumerFactory getConsumerFactory(){
+        Properties properties=new Properties();
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,"localhost:9092");
+        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,StringDeserializer.class);
+        return new DefaultKafkaConsumerFactory(properties);
     }
 }

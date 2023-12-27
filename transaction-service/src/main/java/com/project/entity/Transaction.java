@@ -13,24 +13,29 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Wallet {
+public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    //walletId is same as user phone number
-    @Column(nullable = false,unique = true)
-    private String walletId;
+    private  String transactionId;
 
+    private String senderId;
 
-    private Long balance;
+    private String receiverId;
 
-    private String currency;
+    private Long amount;
+
+    @Enumerated(value=EnumType.STRING)
+    private TransactionStatus transactionStatus;
+
+    private String reason;
 
     @CreationTimestamp
     private Date createdOn;
 
     @UpdateTimestamp
     private Date updatedOn;
+
 }

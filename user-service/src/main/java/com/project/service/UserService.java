@@ -41,4 +41,8 @@ public class UserService {
         userCacheRepository.set(user);
         return user;
     }
+
+    public User getUserByPhone(String phone) {
+        return userRepository.findByPhone(phone);
+    }
 }
