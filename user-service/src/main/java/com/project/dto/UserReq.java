@@ -13,18 +13,22 @@ public class UserReq {
     @NotBlank
     private String name;
     @NotBlank
-    private String phone;
+    private String userName;
     private String email;
 
     @Min(18)
     private Integer age;
+
+    @NotBlank
+    private String password;
 
     public User toUser(){
         return User.builder().
                 name(this.name).
                 age(this.age).
                 email(this.email).
-                phone(this.phone).
+                username(this.userName).
+                password(this.password).
                 build();
     }
 }

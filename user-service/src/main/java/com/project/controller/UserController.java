@@ -6,6 +6,7 @@ import com.project.entity.User;
 import com.project.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,13 +19,14 @@ public class UserController {
         userService.create(req.toUser());
     }
 
-    @GetMapping("/user/{userId}")
-    public User getUser(@PathVariable("userId") Integer userId) throws Exception {
-       return userService.getUser(userId);
+    @GetMapping("/user")
+    public User getUser() throws Exception {
+        User user= (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+       return userService.getUser(user.getId());
     }
 
-    @GetMapping("/user/phone/{phone}")
-    public User getUserByPhone(@PathVariable("phone") String  phone) throws Exception {
-        return userService.getUserByPhone(phone);
+    @GetMapping("/user/username/{phone}")
+    public User getUserByPhone(@PathVariable("username") String  username) throws Exception {
+        return (User) userService.loadUserByUsername(username);
     }
 }

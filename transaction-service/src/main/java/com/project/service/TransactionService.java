@@ -33,9 +33,9 @@ public class TransactionService {
     private static final String TRANSACTION_CREATED="transaction_created";
     private static final String WALLET_UPDATED_TOPIC="wallet_updated";
     private static final String TRANSACTION_COMPLETED_TOPIC="transaction_completed";
-    public String transact(TransactionReq transactionReq) throws JsonProcessingException {
+    public String transact(TransactionReq transactionReq,String senderId) throws JsonProcessingException {
         Transaction transaction=Transaction.builder().
-                senderId(transactionReq.getSender()).
+                senderId(senderId).
                 receiverId(transactionReq.getReceiver()).
                 reason(transactionReq.getComment()).
                 amount(transactionReq.getAmount()).
@@ -69,8 +69,8 @@ public class TransactionService {
         notifObj.put("transactionId",transactionId);
         notifObj.put("status",status);
         notifObj.put("amount",amount);
-        JSONObject senderObj=this.restTemplate.getForObject("http://localhost:9090/user/phone/"+senderId, JSONObject.class);
-        JSONObject receiverObj=this.restTemplate.getForObject("http://localhost:9090/user/phone/"+receiverId, JSONObject.class);
+        JSONObject senderObj=this.restTemplate.getForObject("http://localhost:9090/user/username/"+senderId, JSONObject.class);
+        JSONObject receiverObj=this.restTemplate.getForObject("http://localhost:9090/user/username/"+receiverId, JSONObject.class);
         String senderEmail=senderObj==null?null:(String) senderObj.get("email");
         String receiverEmail=receiverObj==null?null:(String) receiverObj.get("email");
         notifObj.put("senderEmail",senderEmail);

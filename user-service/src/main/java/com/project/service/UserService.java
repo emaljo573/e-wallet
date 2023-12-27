@@ -8,10 +8,14 @@ import com.project.repository.UserRepository;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private static final String USER_CREATED_TOPIC="user_created";
     @Autowired
@@ -23,11 +27,16 @@ public class UserService {
     @Autowired
     KafkaTemplate<String,String> kafkaTemplate;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     ObjectMapper objectMapper=new ObjectMapper();
     public void create(User user) throws JsonProcessingException {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setAuthorities("usr");
         userRepository.save(user);
         JSONObject userObj=new JSONObject();
-        userObj.put("phone",user.getPhone());
+        userObj.put("phone",user.getUsername());
         userObj.put("email",user.getEmail());
         kafkaTemplate.send(USER_CREATED_TOPIC,objectMapper.writeValueAsString(userObj));
     }
@@ -42,7 +51,8 @@ public class UserService {
         return user;
     }
 
-    public User getUserByPhone(String phone) {
-        return userRepository.findByPhone(phone);
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username);
     }
 }
